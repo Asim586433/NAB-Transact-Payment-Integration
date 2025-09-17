@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAB Transact Payment Integration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --gray: #95a5a6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+        
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .payment-form {
+            flex: 1;
+            min-width: 300px;
+            padding: 30px;
+            background: white;
+        }
+        
+        .info-panel {
+            flex: 1;
+            min-width: 300px;
+            padding: 30px;
+            background: var(--light);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .card-icons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .card-icon {
+            width: 40px;
+            height: 24px;
+            background: #f1f1f1;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-size: 12px;
+        }
+        
+        .card-icon.active {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .security-note {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .info-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .info-box h3 {
+            color: var(--secondary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-box ul {
+            list-style-type: none;
+        }
+        
+        .info-box li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .info-box li i {
+            color: var(--success);
+            margin-top: 4px;
+        }
+        
+        .test-cards {
+            background: #f8f9fa;
+            border-left: 4px solid var(--warning);
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        
+        .test-cards h4 {
+            color: var(--warning);
+            margin-bottom: 10px;
+        }
+        
+        .test-cards p {
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .content {
+                flex-direction: column;
+            }
+        }
+        
+        /* Loading animation */
+        .loader {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .loader .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(52, 152, 219, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--secondary);
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Response messages */
+        .response-message {
+            display: none;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .success {
+            background: rgba(46, 204, 113, 0.2);
+            color: #27ae60;
+            border: 1px solid #2ecc71;
+        }
+        
+        .error {
+            background: rgba(231, 76, 60, 0.2);
+            color: #c0392b;
+            border: 1px solid #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NAB Transact Payment Gateway</h1>
+            <p>Secure payment processing integrated with GravityForms</p>
+        </header>
+        
+        <div class="content">
+            <div class="payment-form">
+                <h2>Payment Details</h2>
+                <p>Complete your transaction securely</p>
+                
+                <div class="response-message success" id="success-message">
+                    Payment processed successfully! Transaction ID: <span id="transaction-id"></span>
+                </div>
+                
+                <div class="response-message error" id="error-message">
+                    There was an issue processing your payment. Please try again.
+                </div>
+                
+                <form id="nab-payment-form">
+                    <div class="form-group">
+                        <label for="card-number">Card Number</label>
+                        <input type="text" id="card-number" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="expiry-date">Expiry Date</label>
+                            <input type="text" id="expiry-date" class="form-control" placeholder="MM/YY" maxlength="5">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cvv">CVV</label>
+                            <input type="text" id="cvv" class="form-control" placeholder="123" maxlength="4">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cardholder-name">Cardholder Name</label>
+                        <input type="text" id="cardholder-name" class="form-control" placeholder="John Doe">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="amount">Amount</label>
+                        <input type="text" id="amount" class="form-control" placeholder="$100.00" value="$100.00" readonly>
+                    </div>
+                    
+                    <div class="card-icons">
+                        <div class="card-icon active"><i class="fab fa-cc-visa"></i></div>
+                        <div class="card-icon"><i class="fab fa-cc-mastercard"></i></div>
+                        <div class="card-icon"><i class="fab fa-cc-amex"></i></div>
+                    </div>
+                    
+                    <div class="loader" id="loader">
+                        <div class="spinner"></div>
+                        <p>Processing your payment...</p>
+                    </div>
+                    
+                    <button type="submit" class="btn" id="pay-button">
+                        <i class="fas fa-lock"></i> Pay Now
+                    </button>
+                    
+                    <div class="security-note">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Your payment details are encrypted and processed securely</span>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="info-panel">
+                <div class="info-box">
+                    <h3><i class="fas fa-info-circle"></i> Integration Details</h3>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> PCI Compliant Payment Processing</li>
+                        <li><i class="fas fa-check-circle"></i> GravityForms Plugin Integration</li>
+                        <li><i class="fas fa-check-circle"></i> Secure XML API Communication</li>
+                        <li><i class="fas fa-check-circle"></i> Support for Refunds & Preauthorization</li>
+                        <li><i class="fas fa-check-circle"></i> 3D Secure Authentication</li>
+                    </ul>
+                </div>
+                
+                <div class="test-cards">
+                    <h4><i class="fas fa-vial"></i> Test Card Numbers</h4>
+                    <p><strong>Visa:</strong> 4444 3333 2222 1111</p>
+                    <p><strong>Mastercard:</strong> 5432 1234 5678 9012</p>
+                    <p>Use any future expiry date and any CVV</p>
+                </div>
+                
+                <div class="info-box">
+                    <h3><i class="fas fa-lock"></i> Security Features</h3>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> No card data stored on server</li>
+                        <li><i class="fas fa-check-circle"></i> TLS 1.2+ encryption</li>
+                        <li><i class="fas fa-check-circle"></i> PCI DSS compliant infrastructure</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2023 NAB Transact Payment Integration | GravityForms Plugin</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const paymentForm = document.getElementById('nab-payment-form');
+            const loader = document.getElementById('loader');
+            const successMessage = document.getElementById('success-message');
+            const errorMessage = document.getElementById('error-message');
+            const payButton = document.getElementById('pay-button');
+            
+            // Format card number input
+            const cardNumberInput = document.getElementById('card-number');
+            cardNumberInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 16) value = value.slice(0, 16);
+                
+                // Format with spaces every 4 characters
+                let formattedValue = '';
+                for (let i = 0; i < value.length; i++) {
+                    if (i > 0 && i % 4 === 0) formattedValue += ' ';
+                    formattedValue += value[i];
+                }
+                
+                e.target.value = formattedValue;
+            });
+            
+            // Format expiry date input
+            const expiryInput = document.getElementById('expiry-date');
+            expiryInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 4) value = value.slice(0, 4);
+                
+                if (value.length > 2) {
+                    value = value.slice(0, 2) + '/' + value.slice(2);
+                }
+                
+                e.target.value = value;
+            });
+            
+            // Form submission handler
+            paymentForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Basic validation
+                if (!cardNumberInput.value || cardNumberInput.value.replace(/\s/g, '').length < 16) {
+                    alert('Please enter a valid card number');
+                    return;
+                }
+                
+                if (!expiryInput.value || expiryInput.value.length !== 5) {
+                    alert('Please enter a valid expiry date (MM/YY)');
+                    return;
+                }
+                
+                // Show loading state
+                loader.style.display = 'block';
+                payButton.disabled = true;
+                successMessage.style.display = 'none';
+                errorMessage.style.display = 'none';
+                
+                // Simulate API call to NAB Transact
+                setTimeout(() => {
+                    // For demo purposes, assume 80% success rate
+                    const isSuccess = Math.random() > 0.2;
+                    
+                    loader.style.display = 'none';
+                    
+                    if (isSuccess) {
+                        // Show success message
+                        successMessage.style.display = 'block';
+                        document.getElementById('transaction-id').textContent = 'TXN-' + Math.floor(Math.random() * 1000000);
+                        
+                        // Reset form
+                        paymentForm.reset();
+                    } else {
+                        // Show error message
+                        errorMessage.style.display = 'block';
+                    }
+                    
+                    payButton.disabled = false;
+                }, 2000);
+            });
+            
+            // CVV input formatting
+            const cvvInput = document.getElementById('cvv');
+            cvvInput.addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
+            });
+        });
+    </script>
+</body>
+</html>
